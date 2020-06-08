@@ -180,7 +180,7 @@ CURL_RETRY="--connect-timeout 15 --max-time 120 --retry 3 --retry-delay 5"
 MISTER_URL="https://github.com/MiSTer-devel/Main_MiSTer"
 SCRIPTS_PATH="Scripts"
 OLD_SCRIPTS_PATH="#Scripts"
-WORK_PATH="/media/fat/$SCRIPTS_PATH/.mister_updater"
+WORK_PATH="/media/fat/$SCRIPTS_PATH/.mister_updater_unofficials"
 #Comment (or uncomment) next lines if you don't want (or want) to update/download from additional repositories (i.e. Scaler filters and Gameboy palettes) each time
 ADDITIONAL_REPOSITORIES=(
 #	"https://github.com/MiSTer-devel/Filters_MiSTer/tree/master/Filters|txt|$BASE_PATH/Filters"
@@ -212,6 +212,12 @@ TO_BE_DELETED_EXTENSION="to_be_deleted"
 UPDATER_VERSION="4.0.7"
 echo "MiSTer Updater version ${UPDATER_VERSION}"
 echo ""
+
+echo "####################"
+echo "# UNOFICCIAL CORES #"
+echo "####################"
+echo
+sleep 2 2> /dev/null
 
 ORIGINAL_SCRIPT_PATH="$0"
 if [ "$ORIGINAL_SCRIPT_PATH" == "bash" ]
@@ -547,10 +553,10 @@ function checkCoreURL {
 	RELEASES_HTML=""
 	RELEASES_HTML=$(curl ${CURL_RETRY} ${SSL_SECURITY_OPTION} -sSLf "${RELEASES_URL}")
 	RELEASE_URLS=$(echo ${RELEASES_HTML} | grep -oE '/'${DOMAIN_URL}'/[a-zA-Z0-9./_-]*_[0-9]{8}[a-zA-Z]?(\.rbf|\.rar|\.zip)?')
-	
+
 	CORE_HAS_MRA="false"
 	#if  [ "${CORE_CATEGORY}" == "arcade-cores" ] && [ "${MAME_ARCADE_ROMS}" == "true" ] && { echo "${RELEASES_HTML}" | grep -qE '/'${DOMAIN_URL}'/[a-zA-Z0-9./_%&#;!()-]*\.mra'; }
-	if  [ "${CORE_CATEGORY}" == "arcade-cores" ] && [ "${MAME_ARCADE_ROMS}" == "true" ] && [[ "${RELEASES_HTML}" =~ /'${DOMAIN_URL}'/[a-zA-Z0-9./_%\&#\;!()-]*\.mra ]]
+	if  [ "${CORE_CATEGORY}" == "arcade-cores" ] && [ "${MAME_ARCADE_ROMS}" == "true" ] && [[ "${RELEASES_HTML}" =~ /${DOMAIN_URL}/[a-zA-Z0-9./_%\&#\;!()-]*\.mra ]]
 	then
 		CORE_HAS_MRA="true"
 	fi
@@ -869,7 +875,7 @@ function checkAdditionalRepository {
 	IFS="$OLD_IFS"
 	
 	echo "Checking $(echo $ADDITIONAL_FILES_URL | sed 's/.*\///g' | awk '{ print toupper( substr( $0, 1, 1 ) ) substr( $0, 2 ); }')"
-	if ! [[ "${ADDITIONAL_FILES_URL}" == https://github.com/'${DOMAIN_URL}'/* ]] || [ "$CORE_CATEGORIES_LAST_SUCCESSFUL_RUN_FILTER" == "" ] || [[ "${ADDITIONAL_FILES_URL^^}" =~ ${CORE_CATEGORIES_LAST_SUCCESSFUL_RUN_FILTER_REGEX^^} ]]
+	if ! [[ "${ADDITIONAL_FILES_URL}" == https://github.com/${DOMAIN_URL}/* ]] || [ "$CORE_CATEGORIES_LAST_SUCCESSFUL_RUN_FILTER" == "" ] || [[ "${ADDITIONAL_FILES_URL^^}" =~ ${CORE_CATEGORIES_LAST_SUCCESSFUL_RUN_FILTER_REGEX^^} ]]
 	then
 		if [ ! -d "$CURRENT_DIR" ]
 		then
