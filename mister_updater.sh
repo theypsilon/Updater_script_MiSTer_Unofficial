@@ -214,7 +214,7 @@ echo "MiSTer Updater version ${UPDATER_VERSION}"
 echo ""
 
 echo "####################"
-echo "# UNOFICCIAL CORES #"
+echo "# UNOFFICIAL CORES #"
 echo "####################"
 echo
 sleep 2 2> /dev/null
