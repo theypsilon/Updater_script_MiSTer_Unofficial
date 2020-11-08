@@ -441,7 +441,7 @@ CORE_URLS="user-content-arcade-cores"$'\n'$'\n'$(curl $CURL_RETRY $SSL_SECURITY_
 UPDATE_CHEATS="false"
 UPDATE_LINUX="false"
 MAME_ALT_ROMS="false"
-MISTER_DEVEL_REPOS_URL="https://api.github.com/users/MrX-8B/repos"
+MISTER_DEVEL_REPOS_URL=
 mkdir -p "$WORK_PATH"
 ADDITIONAL_REPOSITORIES=()
 FILTERS_URL=""
@@ -468,31 +468,11 @@ then
 	LAST_SUCCESSFUL_RUN_DATETIME_UTC=$(cat "${LAST_SUCCESSFUL_RUN_PATH}" | sed '1q;d')
 	LAST_SUCCESSFUL_RUN_INI_DATETIME_UTC=$(cat "${LAST_SUCCESSFUL_RUN_PATH}" | sed '2q;d')
 	LAST_SUCCESSFUL_RUN_UPDATER_VERSION=$(cat "${LAST_SUCCESSFUL_RUN_PATH}" | sed '3q;d')
-
-	UPDATER_VERSION="${UPDATER_VERSION}-fix"
 	
 	if [ "${MISTER_DEVEL_REPOS_URL}" != "" ] && [ "${INI_DATETIME_UTC}" == "${LAST_SUCCESSFUL_RUN_INI_DATETIME_UTC}" ] && [ "${UPDATER_VERSION}" == "${LAST_SUCCESSFUL_RUN_UPDATER_VERSION}" ]
 	then
 		echo "Downloading MiSTer Unofficial updates"
 		echo ""
-		API_PAGE=1
-		API_RESPONSE=$(curl ${CURL_RETRY} ${SSL_SECURITY_OPTION} -sSLf "${MISTER_DEVEL_REPOS_URL}?per_page=100&page=${API_PAGE}" | grep -oE '("svn_url": "[^"]*)|("updated_at": "[^"]*)' | sed 's/"svn_url": "//; s/"updated_at": "//')
-		until [ "${API_RESPONSE}" == "" ]; do
-			for API_RESPONSE_LINE in $API_RESPONSE; do
-				if [[ "${API_RESPONSE_LINE}" =~ https: ]]
-				then
-					if [[ "${LAST_SUCCESSFUL_RUN_DATETIME_UTC}" < "${REPO_UPDATE_DATETIME_UTC}" ]]
-					then
-						CORE_CATEGORIES_LAST_SUCCESSFUL_RUN_FILTER="${CORE_CATEGORIES_LAST_SUCCESSFUL_RUN_FILTER} ${API_RESPONSE_LINE##*/}"
-					fi
-				else
-					REPO_UPDATE_DATETIME_UTC="${API_RESPONSE_LINE}"
-				fi
-			done
-			API_PAGE=$((API_PAGE+1))
-			API_RESPONSE=$(curl ${CURL_RETRY} ${SSL_SECURITY_OPTION} -sSLf "${MISTER_DEVEL_REPOS_URL}?per_page=100&page=${API_PAGE}" | grep -oE '("svn_url": "[^"]*)|("updated_at": "[^"]*)' | sed 's/"svn_url": "//; s/"updated_at": "//')
-		done
-		MISTER_DEVEL_REPOS_URL="https://api.github.com/users/d18c7db/repos"
 		API_PAGE=1
 		API_RESPONSE=$(curl ${CURL_RETRY} ${SSL_SECURITY_OPTION} -sSLf "${MISTER_DEVEL_REPOS_URL}?per_page=100&page=${API_PAGE}" | grep -oE '("svn_url": "[^"]*)|("updated_at": "[^"]*)' | sed 's/"svn_url": "//; s/"updated_at": "//')
 		until [ "${API_RESPONSE}" == "" ]; do
@@ -523,6 +503,10 @@ then
 		echo "${LAST_SUCCESSFUL_RUN_PATH}"
 		echo ""
 	else
+		if [[ "${MISTER_DEVEL_REPOS_URL}" == "" ]]
+		then
+			echo "Downloading MiSTer Unofficial updates"
+		else
 		echo "Performing a full updater resync because"
 		if [ "${UPDATER_VERSION}" != "${LAST_SUCCESSFUL_RUN_UPDATER_VERSION}" ]
 		then
@@ -531,6 +515,7 @@ then
 		if [ "${INI_DATETIME_UTC}" != "${LAST_SUCCESSFUL_RUN_INI_DATETIME_UTC}" ]
 		then
 			echo "${INI_PATH} was modified"
+		fi
 		fi
 		echo ""
 	fi
