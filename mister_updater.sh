@@ -20,6 +20,7 @@
 # https://github.com/theypsilon/Updater_script_MiSTer_Unofficial
 
 
+# Version 4.0.18 - 2021-10-29 - Fix parsing of Arcade wiki page.
 # Version 4.0.17 - 2021-08-30 - Support for the new 7z Linux update archive format (thanks to MiSTer Addons for the help with testing).
 # Version 4.0.16 - 2021-08-10 - Fixes Intellivision game folder creation (thanks to theypsilon).
 # Version 4.0.15 - 2021-06-14 - Handle HTML codes for square brackets and ampersand
@@ -452,7 +453,7 @@ CORE_URLS=$(curl $CURL_RETRY $SSL_SECURITY_OPTION -sSLf "$MISTER_URL/wiki"| awk 
 #MENU_URL=$(echo "${CORE_URLS}" | grep -io 'https://github.com/[a-zA-Z0-9./_-]*Menu_MiSTer')
 #CORE_URLS=$(echo "${CORE_URLS}" |  sed 's/https:\/\/github.com\/[a-zA-Z0-9.\/_-]*Menu_MiSTer//')
 #CORE_URLS=${SD_INSTALLER_URL}$'\n'${MISTER_URL}$'\n'${MENU_URL}$'\n'${CORE_URLS}$'\n'"user-content-arcade-cores"$'\n'$(curl $CURL_RETRY $SSL_SECURITY_OPTION -sSLf "$MISTER_URL/wiki/Arcade-Cores-List"| awk '/wiki-content/,/wiki-rightbar/' | grep -io '\(https://github.com/[a-zA-Z0-9./_-]*_MiSTer\)' | awk '!a[$0]++')
-CORE_URLS=${CORE_URLS}$'\n'"user-content-arcade-cores"$'\n'$'\n'$(curl $CURL_RETRY $SSL_SECURITY_OPTION -sSLf "$MISTER_URL/wiki/Arcade-Cores-List"| awk '/wiki-content/,/wiki-rightbar/' | grep -io '\(https://github.com/[a-zA-Z0-9./_-]*\)' | awk '!a[$0]++')
+CORE_URLS=${CORE_URLS}$'\n'"user-content-arcade-cores"$'\n'$'\n'$(curl $CURL_RETRY $SSL_SECURITY_OPTION -sSLf "$MISTER_URL/wiki/Arcade-Cores-List"| awk '/Arcade-Cores-Top/,/Arcade-Cores-Bottom/' | grep -io '\(https://github.com/[a-zA-Z0-9./_-]*\)' | awk '!a[$0]++')
 UPDATE_CHEATS="false"
 UPDATE_LINUX="false"
 MAME_ALT_ROMS="false"
